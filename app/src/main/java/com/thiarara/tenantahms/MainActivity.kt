@@ -29,6 +29,8 @@ import com.thiarara.tenantahms.data.model.Property
 import com.thiarara.tenantahms.ui.screens.tenants.TenantManagementScreen
 import com.thiarara.tenantahms.ui.screens.users.UsersScreen
 import com.thiarara.tenantahms.ui.screens.roles.RoleManagementScreen
+import com.thiarara.tenantahms.ui.screens.complaints.ComplaintsScreen
+import com.thiarara.tenantahms.ui.screens.complaints.ComplaintDetailScreen
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -216,8 +218,12 @@ class MainActivity : ComponentActivity() {
 
                         // Complaints Route
                         composable(Screen.Complaints.route) {
-                            // TODO: Implement ComplaintsScreen
-                            Text("Complaints Screen - Coming Soon")
+                            ComplaintsScreen(
+                                onNavigateBack = { navController.navigateUp() },
+                                onComplaintClick = { complaintId ->
+                                    navController.navigate("${Screen.ComplaintDetails.route}/$complaintId")
+                                }
+                            )
                         }
 
                         // Reports Routes
@@ -233,6 +239,18 @@ class MainActivity : ComponentActivity() {
                         // Roles Route
                         composable(Screen.Roles.route) {
                             RoleManagementScreen(
+                                onNavigateBack = { navController.navigateUp() }
+                            )
+                        }
+
+                        // Complaint Details Route
+                        composable(
+                            route = "${Screen.ComplaintDetails.route}/{complaintId}",
+                            arguments = listOf(navArgument("complaintId") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val complaintId = backStackEntry.arguments?.getString("complaintId") ?: return@composable
+                            ComplaintDetailScreen(
+                                complaintId = complaintId,
                                 onNavigateBack = { navController.navigateUp() }
                             )
                         }
