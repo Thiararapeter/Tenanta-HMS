@@ -3,7 +3,10 @@ package com.thiarara.tenantahms.data
 import androidx.compose.runtime.mutableStateListOf
 import com.thiarara.tenantahms.data.model.Amenity
 import com.thiarara.tenantahms.data.model.PropertyType
+<<<<<<< HEAD
 import com.thiarara.tenantahms.data.model.Room
+=======
+>>>>>>> 95f9cfd036d0ed8cf2c9bc90e57febc1be68f705
 import com.thiarara.tenantahms.data.sample.sampleAmenities
 
 object PropertyDataManager {
@@ -13,9 +16,12 @@ object PropertyDataManager {
     private val _propertyTypes = mutableStateListOf<String>()
     val propertyTypes: List<String> get() = _propertyTypes
 
+<<<<<<< HEAD
     private val _rooms = mutableStateListOf<Room>()
     val rooms: List<Room> get() = _rooms
 
+=======
+>>>>>>> 95f9cfd036d0ed8cf2c9bc90e57febc1be68f705
     init {
         // Initialize with default property types
         _propertyTypes.addAll(
@@ -63,6 +69,7 @@ object PropertyDataManager {
     fun deleteAmenity(amenity: Amenity) {
         _amenities.remove(amenity)
     }
+<<<<<<< HEAD
 
     fun getRoomsForProperty(propertyId: String): List<Room> {
         return _rooms.filter { it.propertyId == propertyId }
@@ -82,4 +89,6 @@ object PropertyDataManager {
     fun deleteRoom(room: Room) {
         _rooms.remove(room)
     }
+=======
+>>>>>>> 95f9cfd036d0ed8cf2c9bc90e57febc1be68f705
 } 

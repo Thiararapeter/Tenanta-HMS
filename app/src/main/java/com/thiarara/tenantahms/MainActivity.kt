@@ -23,7 +23,10 @@ import com.thiarara.tenantahms.ui.screens.settings.SettingsScreen
 import com.thiarara.tenantahms.ui.screens.property.*
 import com.thiarara.tenantahms.ui.screens.amenities.AmenitiesScreen
 import com.thiarara.tenantahms.ui.theme.TenantaHMSTheme
+<<<<<<< HEAD
 import com.thiarara.tenantahms.ui.screens.rooms.RoomsScreen
+=======
+>>>>>>> 95f9cfd036d0ed8cf2c9bc90e57febc1be68f705
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -140,6 +143,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         // Rooms Route
+<<<<<<< HEAD
                         composable(
                             route = Screen.Rooms.route + "?propertyId={propertyId}",
                             arguments = listOf(
@@ -155,6 +159,11 @@ class MainActivity : ComponentActivity() {
                                 propertyId = propertyId,
                                 onNavigateBack = { navController.navigateUp() }
                             )
+=======
+                        composable(Screen.Rooms.route) {
+                            // TODO: Implement RoomsScreen
+                            Text("Rooms Screen - Coming Soon")
+>>>>>>> 95f9cfd036d0ed8cf2c9bc90e57febc1be68f705
                         }
 
                         // Users Route
