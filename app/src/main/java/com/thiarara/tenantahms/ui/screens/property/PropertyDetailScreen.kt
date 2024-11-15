@@ -10,7 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.thiarara.tenantahms.data.sample.sampleProperties
+import com.thiarara.tenantahms.data.PropertyDataManager
+import com.thiarara.tenantahms.data.model.Property
 import com.thiarara.tenantahms.ui.screens.property.components.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -18,10 +19,20 @@ import com.thiarara.tenantahms.ui.screens.property.components.*
 fun PropertyDetailScreen(
     propertyId: String,
     onNavigateBack: () -> Unit,
-    onEditProperty: (String) -> Unit
+    onEditProperty: (String) -> Unit,
+    onDeleteProperty: (Property) -> Unit,
+    onManageRooms: (String) -> Unit,
+    onViewTenants: (String) -> Unit
 ) {
-    val property = sampleProperties.first { it.propertyId == propertyId }
-    val scrollState = rememberScrollState()
+    val property = PropertyDataManager.getProperty(propertyId)
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
+
+    if (property == null) {
+        LaunchedEffect(Unit) {
+            onNavigateBack()
+        }
+        return
+    }
 
     Scaffold(
         topBar = {
@@ -36,6 +47,9 @@ fun PropertyDetailScreen(
                     IconButton(onClick = { onEditProperty(propertyId) }) {
                         Icon(Icons.Default.Edit, "Edit Property")
                     }
+                    IconButton(onClick = { showDeleteConfirmation = true }) {
+                        Icon(Icons.Default.Delete, "Delete Property")
+                    }
                 }
             )
         }
@@ -43,7 +57,7 @@ fun PropertyDetailScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
+                .verticalScroll(rememberScrollState())
                 .padding(padding)
                 .padding(16.dp)
         ) {
@@ -70,14 +84,17 @@ fun PropertyDetailScreen(
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            // Actions
+            // Management Actions
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
-                    onClick = { /* TODO: Navigate to Rooms Management */ },
-                    modifier = Modifier.weight(1f)
+                    onClick = { onManageRooms(propertyId) },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
                 ) {
                     Icon(Icons.Default.MeetingRoom, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
@@ -85,8 +102,11 @@ fun PropertyDetailScreen(
                 }
                 
                 Button(
-                    onClick = { /* TODO: Navigate to Tenants List */ },
-                    modifier = Modifier.weight(1f)
+                    onClick = { onViewTenants(propertyId) },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary
+                    )
                 ) {
                     Icon(Icons.Default.Group, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
@@ -94,6 +114,36 @@ fun PropertyDetailScreen(
                 }
             }
         }
+    }
+
+    // Delete Confirmation Dialog
+    if (showDeleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmation = false },
+            title = { Text("Delete Property") },
+            text = { 
+                Text("Are you sure you want to delete ${property.name}? This action cannot be undone.")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDeleteProperty(property)
+                        showDeleteConfirmation = false
+                        onNavigateBack()
+                    },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteConfirmation = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
 

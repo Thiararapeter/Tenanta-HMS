@@ -23,9 +23,9 @@ import com.thiarara.tenantahms.ui.screens.settings.SettingsScreen
 import com.thiarara.tenantahms.ui.screens.property.*
 import com.thiarara.tenantahms.ui.screens.amenities.AmenitiesScreen
 import com.thiarara.tenantahms.ui.theme.TenantaHMSTheme
-import com.thiarara.tenantahms.ui.screens.rooms.RoomsScreen
-import com.thiarara.tenantahms.ui.screens.rooms.RoomTypesScreen
-import com.thiarara.tenantahms.ui.screens.rooms.RoomsManagementScreen
+import com.thiarara.tenantahms.ui.screens.rooms.*
+import com.thiarara.tenantahms.data.PropertyDataManager
+import com.thiarara.tenantahms.data.model.Property
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -70,7 +70,9 @@ class MainActivity : ComponentActivity() {
                             HomeScreen()
                         }
                         composable(BottomNavItem.Dashboard.route) {
-                            DashboardScreen(navController = navController)
+                            DashboardScreen(
+                                onNavigate = { route -> navController.navigate(route) }
+                            )
                         }
                         composable(BottomNavItem.Profile.route) {
                             ProfileScreen()
@@ -87,7 +89,8 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onAddProperty = {
                                     navController.navigate(Screen.AddProperty.route)
-                                }
+                                },
+                                navController = navController
                             )
                         }
                         composable(
@@ -100,6 +103,17 @@ class MainActivity : ComponentActivity() {
                                 onNavigateBack = { navController.navigateUp() },
                                 onEditProperty = { id ->
                                     navController.navigate(Screen.EditProperty.createRoute(id))
+                                },
+                                onDeleteProperty = { property ->
+                                    PropertyDataManager.deleteProperty(property)
+                                    navController.navigateUp()
+                                },
+                                onManageRooms = { id ->
+                                    navController.navigate(Screen.RoomsList.route + "?propertyId=$id")
+                                },
+                                onViewTenants = { id ->
+                                    // TODO: Implement navigation to tenants screen
+                                    // navController.navigate(Screen.PropertyTenants.createRoute(id))
                                 }
                             )
                         }
@@ -107,7 +121,7 @@ class MainActivity : ComponentActivity() {
                             AddEditPropertyScreen(
                                 onNavigateBack = { navController.navigateUp() },
                                 onSave = { property ->
-                                    // TODO: Save property
+                                    PropertyDataManager.addProperty(property)
                                     navController.navigateUp()
                                 }
                             )
@@ -117,14 +131,17 @@ class MainActivity : ComponentActivity() {
                             arguments = listOf(navArgument("propertyId") { type = NavType.StringType })
                         ) { backStackEntry ->
                             val propertyId = backStackEntry.arguments?.getString("propertyId") ?: return@composable
-                            AddEditPropertyScreen(
-                                propertyId = propertyId,
-                                onNavigateBack = { navController.navigateUp() },
-                                onSave = { property ->
-                                    // TODO: Update property
-                                    navController.navigateUp()
-                                }
-                            )
+                            val property = PropertyDataManager.getProperty(propertyId)
+                            if (property != null) {
+                                AddEditPropertyScreen(
+                                    propertyId = propertyId,
+                                    onNavigateBack = { navController.navigateUp() },
+                                    onSave = { updatedProperty ->
+                                        PropertyDataManager.updateProperty(property, updatedProperty)
+                                        navController.navigateUp()
+                                    }
+                                )
+                            }
                         }
 
                         // Amenities Route

@@ -23,6 +23,11 @@ fun RoomsScreen(
     propertyId: String? = null,
     onNavigateBack: () -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        println("RoomsScreen - Available properties: ${PropertyDataManager.properties.size}")
+        PropertyDataManager.debugPrintProperties()
+    }
+    
     var showAddDialog by remember { mutableStateOf(false) }
     var editingRoom by remember { mutableStateOf<Room?>(null) }
     var showDeleteConfirmation by remember { mutableStateOf<Room?>(null) }

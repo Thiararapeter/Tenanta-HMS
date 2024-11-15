@@ -17,7 +17,9 @@ import com.thiarara.tenantahms.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(navController: NavController) {
+fun DashboardScreen(
+    onNavigate: (String) -> Unit
+) {
     val scrollState = rememberScrollState()
     
     // Calculate stats
@@ -132,7 +134,7 @@ fun DashboardScreen(navController: NavController) {
                         title = "Properties",
                         subtitle = "Manage properties",
                         icon = Icons.Default.Home,
-                        onClick = { navController.navigate(Screen.PropertyList.route) }
+                        onClick = { onNavigate(Screen.PropertyList.route) }
                     )
                 }
                 Box(modifier = Modifier.weight(1f)) {
@@ -140,7 +142,7 @@ fun DashboardScreen(navController: NavController) {
                         title = "Property Types",
                         subtitle = "Configure types",
                         icon = Icons.Default.Category,
-                        onClick = { navController.navigate(Screen.PropertyTypes.route) }
+                        onClick = { onNavigate(Screen.PropertyTypes.route) }
                     )
                 }
             }
@@ -155,7 +157,7 @@ fun DashboardScreen(navController: NavController) {
                         title = "Rooms",
                         subtitle = "Manage rooms",
                         icon = Icons.Default.MeetingRoom,
-                        onClick = { navController.navigate(Screen.Rooms.route) }
+                        onClick = { onNavigate(Screen.Rooms.route) }
                     )
                 }
                 Box(modifier = Modifier.weight(1f)) {
@@ -163,7 +165,7 @@ fun DashboardScreen(navController: NavController) {
                         title = "Amenities",
                         subtitle = "Manage amenities",
                         icon = Icons.Default.List,
-                        onClick = { navController.navigate(Screen.Amenities.route) }
+                        onClick = { onNavigate(Screen.Amenities.route) }
                     )
                 }
             }
@@ -178,7 +180,7 @@ fun DashboardScreen(navController: NavController) {
                         title = "Users",
                         subtitle = "Manage users",
                         icon = Icons.Default.Group,
-                        onClick = { navController.navigate(Screen.Users.route) }
+                        onClick = { onNavigate(Screen.Users.route) }
                     )
                 }
                 Box(modifier = Modifier.weight(1f)) {
@@ -186,7 +188,7 @@ fun DashboardScreen(navController: NavController) {
                         title = "Tenants",
                         subtitle = "Manage tenants",
                         icon = Icons.Default.Person,
-                        onClick = { navController.navigate(Screen.Tenants.route) }
+                        onClick = { onNavigate(Screen.Tenants.route) }
                     )
                 }
             }
@@ -201,7 +203,7 @@ fun DashboardScreen(navController: NavController) {
                         title = "Payments",
                         subtitle = "Track payments",
                         icon = Icons.Default.Payment,
-                        onClick = { navController.navigate(Screen.Payments.route) }
+                        onClick = { onNavigate(Screen.Payments.route) }
                     )
                 }
                 Box(modifier = Modifier.weight(1f)) {
@@ -209,7 +211,7 @@ fun DashboardScreen(navController: NavController) {
                         title = "Complaints",
                         subtitle = "Handle issues",
                         icon = Icons.Default.Report,
-                        onClick = { navController.navigate(Screen.Complaints.route) }
+                        onClick = { onNavigate(Screen.Complaints.route) }
                     )
                 }
             }
@@ -234,7 +236,7 @@ fun DashboardScreen(navController: NavController) {
                     title = "Financial Reports",
                     subtitle = "View statements",
                     icon = Icons.Default.Assessment,
-                    onClick = { navController.navigate(Screen.FinancialReports.route) }
+                    onClick = { onNavigate(Screen.FinancialReports.route) }
                 )
             }
             Box(modifier = Modifier.weight(1f)) {
@@ -242,7 +244,7 @@ fun DashboardScreen(navController: NavController) {
                     title = "Occupancy Reports",
                     subtitle = "View statistics",
                     icon = Icons.Default.PieChart,
-                    onClick = { navController.navigate(Screen.OccupancyReports.route) }
+                    onClick = { onNavigate(Screen.OccupancyReports.route) }
                 )
             }
         }

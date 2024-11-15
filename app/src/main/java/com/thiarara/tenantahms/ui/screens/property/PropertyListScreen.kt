@@ -1,5 +1,6 @@
 package com.thiarara.tenantahms.ui.screens.property
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,16 +13,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.thiarara.tenantahms.data.sample.sampleProperties
+import androidx.navigation.NavController
+import com.thiarara.tenantahms.data.PropertyDataManager
 import com.thiarara.tenantahms.data.model.Property
+import com.thiarara.tenantahms.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PropertyListScreen(
     onPropertyClick: (String) -> Unit,
-    onAddProperty: () -> Unit
+    onAddProperty: () -> Unit,
+    navController: NavController
 ) {
+    // Debug print at the start of the composable
+    LaunchedEffect(Unit) {
+        println("PropertyListScreen - Checking properties")
+        PropertyDataManager.debugPrintProperties()
+    }
+
+    val properties by remember { derivedStateOf { PropertyDataManager.getAllProperties() } }
     var searchQuery by remember { mutableStateOf("") }
+    var selectedProperty by remember { mutableStateOf<Property?>(null) }
+    var showPropertyMenu by remember { mutableStateOf(false) }
     
     Scaffold(
         topBar = {
@@ -65,13 +78,77 @@ fun PropertyListScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(sampleProperties) { property ->
+                items(properties) { property ->
                     PropertyCard(
                         property = property,
-                        onClick = { onPropertyClick(property.propertyId) }
+                        onClick = { 
+                            selectedProperty = property
+                            showPropertyMenu = true
+                        }
                     )
                 }
             }
+        }
+
+        // Property Management Menu
+        if (showPropertyMenu && selectedProperty != null) {
+            AlertDialog(
+                onDismissRequest = { 
+                    showPropertyMenu = false
+                    selectedProperty = null
+                },
+                title = { Text("Manage ${selectedProperty?.name}") },
+                text = {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        ListItem(
+                            headlineContent = { Text("View Details") },
+                            leadingContent = { Icon(Icons.Default.Info, null) },
+                            modifier = Modifier.clickable { 
+                                onPropertyClick(selectedProperty!!.propertyId)
+                                showPropertyMenu = false
+                                selectedProperty = null
+                            }
+                        )
+                        ListItem(
+                            headlineContent = { Text("Manage Rooms") },
+                            leadingContent = { Icon(Icons.Default.MeetingRoom, null) },
+                            modifier = Modifier.clickable {
+                                navController.navigate(Screen.RoomsList.route + "?propertyId=${selectedProperty!!.propertyId}")
+                                showPropertyMenu = false
+                                selectedProperty = null
+                            }
+                        )
+                        ListItem(
+                            headlineContent = { Text("View Tenants") },
+                            leadingContent = { Icon(Icons.Default.Group, null) },
+                            modifier = Modifier.clickable {
+                                // TODO: Navigate to property tenants
+                                showPropertyMenu = false
+                                selectedProperty = null
+                            }
+                        )
+                        ListItem(
+                            headlineContent = { Text("Financial Reports") },
+                            leadingContent = { Icon(Icons.Default.AttachMoney, null) },
+                            modifier = Modifier.clickable {
+                                // TODO: Navigate to property financial reports
+                                showPropertyMenu = false
+                                selectedProperty = null
+                            }
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { 
+                        showPropertyMenu = false
+                        selectedProperty = null
+                    }) {
+                        Text("Close")
+                    }
+                }
+            )
         }
     }
 }
