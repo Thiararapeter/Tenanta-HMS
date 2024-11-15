@@ -36,6 +36,22 @@ fun PropertyListScreen(
     var selectedProperty by remember { mutableStateOf<Property?>(null) }
     var showPropertyMenu by remember { mutableStateOf(false) }
     
+    // Filter properties based on search query
+    val filteredProperties = remember(properties, searchQuery) {
+        if (searchQuery.isBlank()) {
+            properties
+        } else {
+            val query = searchQuery.trim().lowercase()
+            properties.filter { property ->
+                property.name.lowercase().contains(query) ||
+                property.type.lowercase().contains(query) ||
+                property.address.lowercase().contains(query) ||
+                property.location.city.lowercase().contains(query) ||
+                property.location.country.lowercase().contains(query)
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -72,13 +88,13 @@ fun PropertyListScreen(
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
             ) { }
             
-            // Property List
+            // Property List - Update to use filteredProperties
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(properties) { property ->
+                items(filteredProperties) { property ->
                     PropertyCard(
                         property = property,
                         onClick = { 

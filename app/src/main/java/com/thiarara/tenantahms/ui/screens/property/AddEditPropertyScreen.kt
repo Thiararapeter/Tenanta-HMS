@@ -46,6 +46,12 @@ fun AddEditPropertyScreen(
     var rentError by remember { mutableStateOf<String?>(null) }
     var roomsError by remember { mutableStateOf<String?>(null) }
 
+    // Add expanded state for dropdown
+    var typeExpanded by remember { mutableStateOf(false) }
+    
+    // Get property types list
+    val propertyTypes = remember { PropertyDataManager.propertyTypes }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -79,13 +85,39 @@ fun AddEditPropertyScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Property Type
-            OutlinedTextField(
-                value = type,
-                onValueChange = { type = it },
-                label = { Text("Property Type") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            // Replace Property Type TextField with ExposedDropdownMenuBox
+            ExposedDropdownMenuBox(
+                expanded = typeExpanded,
+                onExpandedChange = { typeExpanded = it }
+            ) {
+                OutlinedTextField(
+                    value = type,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Property Type") },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = typeExpanded)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = typeExpanded,
+                    onDismissRequest = { typeExpanded = false }
+                ) {
+                    propertyTypes.forEach { propertyType ->
+                        DropdownMenuItem(
+                            text = { Text(propertyType) },
+                            onClick = {
+                                type = propertyType
+                                typeExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
 
             // Address
             OutlinedTextField(
