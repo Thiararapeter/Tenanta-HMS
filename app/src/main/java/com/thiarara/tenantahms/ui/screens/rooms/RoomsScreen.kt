@@ -168,7 +168,7 @@ private fun RoomItem(
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = room.type.displayName(),
+                        text = room.type,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

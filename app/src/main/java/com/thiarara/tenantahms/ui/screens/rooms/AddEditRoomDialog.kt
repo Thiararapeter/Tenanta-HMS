@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.thiarara.tenantahms.data.PropertyDataManager
 import com.thiarara.tenantahms.data.model.Room
 import com.thiarara.tenantahms.data.model.RoomStatus
-import com.thiarara.tenantahms.data.model.RoomType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,7 +24,7 @@ fun AddEditRoomDialog(
     onSave: (Room) -> Unit
 ) {
     var number by remember { mutableStateOf(room?.number ?: "") }
-    var selectedType by remember { mutableStateOf(room?.type ?: RoomType.SINGLE) }
+    var selectedType by remember { mutableStateOf(room?.type ?: PropertyDataManager.roomTypes.firstOrNull() ?: "") }
     var selectedStatus by remember { mutableStateOf(room?.status ?: RoomStatus.VACANT) }
     var monthlyRent by remember { mutableStateOf(room?.monthlyRent?.toString() ?: "") }
     var floor by remember { mutableStateOf(room?.floor?.toString() ?: "") }
@@ -61,11 +60,11 @@ fun AddEditRoomDialog(
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(RoomType.values()) { type ->
+                    items(PropertyDataManager.roomTypes) { type ->
                         FilterChip(
                             selected = selectedType == type,
                             onClick = { selectedType = type },
-                            label = { Text(type.displayName()) }
+                            label = { Text(type) }
                         )
                     }
                 }
