@@ -23,13 +23,21 @@ fun AddEditRoomDialog(
     onDismiss: () -> Unit,
     onSave: (Room) -> Unit
 ) {
+    // Get latest amenities list
+    val amenities by remember { derivedStateOf { PropertyDataManager.amenities } }
+    val roomTypes by remember { derivedStateOf { PropertyDataManager.roomTypes } }
+    
     var number by remember { mutableStateOf(room?.number ?: "") }
-    var selectedType by remember { mutableStateOf(room?.type ?: PropertyDataManager.roomTypes.firstOrNull() ?: "") }
+    var selectedType by remember(roomTypes) { 
+        mutableStateOf(room?.type ?: roomTypes.firstOrNull() ?: "") 
+    }
     var selectedStatus by remember { mutableStateOf(room?.status ?: RoomStatus.VACANT) }
     var monthlyRent by remember { mutableStateOf(room?.monthlyRent?.toString() ?: "") }
     var floor by remember { mutableStateOf(room?.floor?.toString() ?: "") }
     var description by remember { mutableStateOf(room?.description ?: "") }
-    var selectedAmenities by remember { mutableStateOf(room?.amenities?.toSet() ?: setOf()) }
+    var selectedAmenities by remember(amenities) { 
+        mutableStateOf(room?.amenities?.toSet() ?: setOf()) 
+    }
     
     var numberError by remember { mutableStateOf<String?>(null) }
     var rentError by remember { mutableStateOf<String?>(null) }
@@ -55,12 +63,12 @@ fun AddEditRoomDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // Room Type Selection
+                // Room Type Selection with latest room types
                 Text("Room Type")
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(PropertyDataManager.roomTypes) { type ->
+                    items(roomTypes) { type ->
                         FilterChip(
                             selected = selectedType == type,
                             onClick = { selectedType = type },
@@ -115,13 +123,13 @@ fun AddEditRoomDialog(
                     minLines = 3
                 )
 
-                // Amenities Selection
+                // Amenities Selection with latest amenities
                 Text("Amenities")
                 LazyColumn(
                     modifier = Modifier.height(200.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(PropertyDataManager.amenities) { amenity ->
+                    items(amenities) { amenity ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
