@@ -26,6 +26,7 @@ import com.thiarara.tenantahms.ui.theme.TenantaHMSTheme
 import com.thiarara.tenantahms.ui.screens.rooms.*
 import com.thiarara.tenantahms.data.PropertyDataManager
 import com.thiarara.tenantahms.data.model.Property
+import com.thiarara.tenantahms.ui.screens.tenants.TenantManagementScreen
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -198,8 +199,9 @@ class MainActivity : ComponentActivity() {
 
                         // Tenants Route
                         composable(Screen.Tenants.route) {
-                            // TODO: Implement TenantsScreen
-                            Text("Tenants Screen - Coming Soon")
+                            TenantManagementScreen(
+                                onNavigateBack = { navController.navigateUp() }
+                            )
                         }
 
                         // Payments Route

@@ -8,6 +8,7 @@ import com.thiarara.tenantahms.data.model.Room
 import com.thiarara.tenantahms.data.model.RoomStatus
 import com.thiarara.tenantahms.data.model.Location
 import com.thiarara.tenantahms.data.sample.sampleAmenities
+import com.thiarara.tenantahms.data.model.Tenant
 
 object PropertyDataManager {
     private val _amenities = mutableStateListOf<Amenity>()
@@ -27,6 +28,9 @@ object PropertyDataManager {
 
     private val _roomCategories = mutableStateListOf<String>()
     val roomCategories: List<String> get() = _roomCategories
+
+    private val _tenants = mutableStateListOf<Tenant>()
+    val tenants: List<Tenant> get() = _tenants
 
     // Add this debug function
     fun debugPrintProperties() {
@@ -285,5 +289,32 @@ object PropertyDataManager {
             println("Property: ${property.name} (ID: ${property.propertyId})")
         }
         return properties
+    }
+
+    fun addTenant(tenant: Tenant) {
+        _tenants.add(tenant)
+    }
+
+    fun updateTenant(oldTenant: Tenant, newTenant: Tenant) {
+        val index = _tenants.indexOf(oldTenant)
+        if (index != -1) {
+            _tenants[index] = newTenant
+        }
+    }
+
+    fun deleteTenant(tenant: Tenant) {
+        _tenants.remove(tenant)
+    }
+
+    fun assignTenantToRoom(tenantId: String, roomId: String) {
+        val tenant = _tenants.find { it.tenantId == tenantId }
+        if (tenant != null) {
+            val updatedTenant = tenant.copy(roomId = roomId)
+            updateTenant(tenant, updatedTenant)
+        }
+    }
+
+    fun isRoomOccupied(roomId: String): Boolean {
+        return tenants.any { it.roomId == roomId }
     }
 } 
