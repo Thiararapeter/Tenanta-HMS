@@ -27,6 +27,8 @@ import com.thiarara.tenantahms.ui.screens.rooms.*
 import com.thiarara.tenantahms.data.PropertyDataManager
 import com.thiarara.tenantahms.data.model.Property
 import com.thiarara.tenantahms.ui.screens.tenants.TenantManagementScreen
+import com.thiarara.tenantahms.ui.screens.users.UsersScreen
+import com.thiarara.tenantahms.ui.screens.roles.RoleManagementScreen
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -63,7 +65,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = BottomNavItem.Dashboard.route,
+                        startDestination = Screen.PropertyList.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         // Bottom Navigation Routes
@@ -112,7 +114,7 @@ class MainActivity : ComponentActivity() {
                                 onManageRooms = { id ->
                                     navController.navigate(Screen.RoomsList.route + "?propertyId=$id")
                                 },
-                                onViewTenants = { id ->
+                                onViewTenants = { _ ->
                                     // TODO: Implement navigation to tenants screen
                                     // navController.navigate(Screen.PropertyTenants.createRoute(id))
                                 }
@@ -193,8 +195,10 @@ class MainActivity : ComponentActivity() {
 
                         // Users Route
                         composable(Screen.Users.route) {
-                            // TODO: Implement UsersScreen
-                            Text("Users Screen - Coming Soon")
+                            UsersScreen(
+                                onNavigateBack = { navController.navigateUp() },
+                                onNavigateToRoles = { navController.navigate(Screen.Roles.route) }
+                            )
                         }
 
                         // Tenants Route
@@ -224,6 +228,13 @@ class MainActivity : ComponentActivity() {
                         composable(Screen.OccupancyReports.route) {
                             // TODO: Implement OccupancyReportsScreen
                             Text("Occupancy Reports Screen - Coming Soon")
+                        }
+
+                        // Roles Route
+                        composable(Screen.Roles.route) {
+                            RoleManagementScreen(
+                                onNavigateBack = { navController.navigateUp() }
+                            )
                         }
                     }
                 }
